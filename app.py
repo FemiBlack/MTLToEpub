@@ -11,6 +11,7 @@ import logging
 import pypandoc
 import json
 import glob
+import os
 
 
 logging.config.fileConfig('logging.ini', disable_existing_loggers=False)
@@ -179,7 +180,7 @@ class Crawler:
     def get_last_chapter(self):
         latest_chapter = self.browser.find_element(By.ID, "lastUpdate").text
         last_chapter = int(latest_chapter.split(".")[1].split(" ")[0])
-        update_json_file({"last_chapter": self.get_last_chapter()})
+        update_json_file({"last_chapter": last_chapter})
 
         return last_chapter
 
@@ -222,6 +223,8 @@ class Crawler:
     def convert_to_epub(self):
         epub_path = "downloads"
         print("Converting to epub...")
+        if not os.path.exists(epub_path):
+            os.makedirs(epub_path)
         pypandoc.convert_file('output.html', 'epub3',
                               outputfile=f"{epub_path}/Nine Star Hegemon Body Art Chapter {self.starting_chapter} - {self.ending_chapter}.epub")
 
